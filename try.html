@@ -19,7 +19,8 @@
   projectId: "rfidattendance-52a83",
   storageBucket: "rfidattendance-52a83.appspot.com",
   messagingSenderId: "531278553318",
-  appId: "1:531278553318:web:e94aa7f489522c6a149b27",  };
+  appId: "1:531278553318:web:e94aa7f489522c6a149b27",
+  };
   firebase.initializeApp(config);
 </script>
 <link href="style.css" rel="stylesheet">
@@ -79,6 +80,7 @@
 <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
   <script>
     $(function(){
@@ -144,7 +146,7 @@
               var row= `<tr>
                   <td>${elem.uid}</td>
                   <td>${elem.id}</td>
-                  <td>${new Date(elem.time.slice(0, -1)).toLocaleString()}</td>
+                  <td>${moment(elem.time.slice(0, -1)).format('HH:mm:ss')}</td>
                   <td id="state${new Date(elem.time).getTime()}"></td>                
               </tr>`;
               button_table.rows.add($(row)).draw();
