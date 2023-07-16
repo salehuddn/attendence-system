@@ -6,6 +6,12 @@
   <head>
     <title>eAttend</title>
     <link rel="icon" href="img/logo-eAttend-png.png" type="image/svg+xml">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
   </head>
   
   <meta charset="UTF-8">
@@ -31,50 +37,38 @@
 <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous"/>
 <link href="https://cdn.datatables.net/responsive/2.2.6/css/responsive.dataTables.min.css" rel="stylesheet">
 </head>
-<body>
+<body background="">
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
-    <div class="container-fluid">
-      <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-          <img src="img/logo-eAttend-svg.svg" class="ms-2" width="auto" height="40" class="d-inline-block align-top" alt="">
-        </a>
-      </nav>
+  <nav class="navbar navbar-expand-lg  navbar-transparent mb-2 justify-content-center align-items-center">
+    <div class="container-fluid justify-content-center align-items-center">
+      
       
       <div class="d-flex justify-content-center align-items-center">
-        <a class="navbar-brand" href="#">Register User</a>
-        <a class="navbar-brand" href="#">Register Event</a>
+        <a class="navbar-brand " href="#">
+          <img src="img/logoputih.svg" class="ms-2 justify-content-center align-items-center" width="100" height="100" class="d-inline-block align-top" alt="">
+        </a>
       </div>
       
-      <button type="button" class="btn btn-primary">Logout</button>
+      
     </div>
   </nav>
   
 
-
-
-
-
-    <!-- <div class="heading">
-        <h1>SMART ATTENDENCE SYSTEM</h1>
-    </div> -->
     <div class="container">
       <div class="card">
-        <div class="card-header">
-          <i class="fa fa-table mr-1"></i>
-          Attendance Summary
+        <div class="card-header text-center">
+          <i class="fa fa-table mr-1 text-center"></i>
+          ATTENDANCE LOG
         </div>
-        <div class="card-body">
-          <button type="button" class="btn btn-primary" id="export">
-            <i class="fa fa-download" aria-hidden="true"></i>
-          </button>
+        <div class="card-body justify-content-center">
+          
     
-          <table class="table table-bordered border table-responsive table-hover text-center " id="buttonTable" data-order="[]">
+          <table class="table table-bordered border table-responsive table-hover text-center jus" id="buttonTable" data-order="[]">
             <thead>
               <tr>
                 <th>ID No.</th>
                 <th>Name</th>
-                <th>Time</th>
+                <th>Time (HH:MM:SS)</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -82,19 +76,30 @@
     
             </tbody>
           </table>
+          <div class="card-footer text-center ">
+            <button type="button" class="btn btn-primary mt-2" id="export">
+              <div class="d-flex justify-content-center align-items-center">
+                <i class="fa fa-download me-2" aria-hidden="true"></i>
+                <span>Download Attendance</span>
+              </div>
+            </button>
+            
+          </div>
         </div>
       </div>
     </div>
     
-  <div class="card mt-4">
-      <div class="card-header">
-          <i class="fa fa-table mr-1"></i>
-          LIVE STATUS
+    <div class="container mt-5">
+      <div class="card ">
+          <div class="card-header text-center">
+          <i class="fa fa-table mr-1 text-center "></i>
+          REGISTERED USER
+          </div>
+        <div class="card-body users ">
+          
+        </div>
       </div>
-      <div class="card-body users">
-        
-      </div>
-  </div>
+    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -127,7 +132,10 @@
         	{
             extend: 'csv',
             filename: 'file_name',
-           	extension: '.csv'
+           	extension: '.csv',
+             exportOptions: {
+        columns: ':visible' // Include all columns, visible or hidden
+      }
         	}
     		],
         initComplete: function() {
@@ -145,21 +153,10 @@
           Object.keys(obj).forEach(key=>{
             $('.users').append(`
             <div class="live">
-              <img src="./img/checkin.png" width="150px">
-              <ul>
-                <li><h3>UID: ${key}</h3></li>
-                <li><img id="true${key}" width="50px" src="./img/tick.png"></li>
-                <li><img id="false${key}" width="50px" src="./img/cross.png"></li>
-              </ul>
+              <h3>UID: ${key} </h3> 
             </div>
             `);
-            if(obj[key]==1){
-              $('#true'+key).show();
-              $('#false'+key).hide();
-            }else{
-              $('#true'+key).hide();
-              $('#false'+key).show();
-            }
+            
           })
         }
       }
@@ -170,18 +167,19 @@
           console.log(arr);  
           arr.forEach(function(elem,i){
               //console.log(table.row);
-              var row= `<tr>
-                  <td>${elem.uid}</td>
-                  <td>${elem.id}</td>
-                  <td>${new Date(elem.time.slice(0, -1)).toLocaleString()}</td>
-                  <td id="state${new Date(elem.time).getTime()}"></td>                
-              </tr>`;
+              var formattedTime = moment(elem.time, 'HH:mm:ss').format('HH:mm:ss');
+              var status = elem.status ? '<span class="badge bg-success">Check In</span>' : '<span class="badge bg-danger">Check Out</span>';
+              var row = `<tr>
+                <td>${elem.uid}</td>
+                <td>${elem.id}</td>
+                <td>${formattedTime}</td>
+                <td>${status}</td>                
+                </tr>`;
               button_table.rows.add($(row)).draw();
-              if(elem.status){
-                  //console.log(elem.status);
-                  $('#state'+new Date(elem.time).getTime()).html('<span class="badge bg-success ">Check In</span>');
-              }else{
-                  $('#state'+new Date(elem.time).getTime()).html('<span class="badge bg-danger">Check Out</span>');
+              if (elem.status) {
+                  $('#state' + i).html('<span class="badge bg-success">Check In</span>');
+              } else {
+                  $('#state' + i).html('<span class="badge bg-danger">Check Out</span>');
               }
           })
         }

@@ -156,3 +156,9 @@ ul{
   padding-top:20px;
   padding-bottom: 20px;
 }
+
+body {
+  background-image: url("img/background.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
